@@ -48,10 +48,26 @@ async function compile(loaderApi, template) {
   return renderer(twigData, dependenciesString, loaderApi.hot);
 
   async function processDependency(token) {
+    await replaceNamespacePlaceholder(token);
     const absolutePath = await resolveModule(loaderApi, token.value);
     dependencies.push(token.value);
     token.value = makeTemplateId(loaderApi, absolutePath);
     loaderApi.addDependency(absolutePath);
+  }
+
+  async function replaceNamespacePlaceholder(token) {
+    if (loaderApi.query && loaderApi.query.namespaces) {
+      const namespaces = loaderApi.query.namespaces;
+      Object.keys(namespaces).forEach((ns) => {
+        var colon = new RegExp('^' + ns + '::');
+        var atSign = new RegExp('^@' + ns);
+        if (colon.test(token.value)) {
+          token.value = token.value.replace(ns + '::', namespaces[ns]);
+        } else if (atSign.test(token.value)) {
+          token.value = token.value.replace('@' + ns, namespaces[ns]);
+        }
+      });
+    }
   }
 
   async function processToken(token) {
