@@ -1,12 +1,11 @@
 {
   "name": "twigjs-loader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "twig.js loader for Webpack",
   "main": "index.js",
   "scripts": {
     "lint": "eslint index.js '__specs__/**/*.js'",
-    "postversion": "npm test && git push && git push --tags",
-    "prepack": "npm test"
+    "postversion": "npm test && git push && git push --tags"
   },
   "files": [
     "index.js",
